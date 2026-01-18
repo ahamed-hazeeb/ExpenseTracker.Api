@@ -7,6 +7,6 @@
         public DateTime Date { get; set; }
 
         public int CategoryID { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
     }
 }
