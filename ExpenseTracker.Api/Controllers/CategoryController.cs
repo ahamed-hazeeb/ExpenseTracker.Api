@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ExpenseTracker.Api.Data;
 using ExpenseTracker.Api.Models;
+using ExpenseTracker.Api.DTO;
 
 namespace ExpenseTracker.Api.Controllers
 {
@@ -23,15 +24,52 @@ namespace ExpenseTracker.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCategory([FromBody] Category category)
+        public IActionResult CreateCategory(CreateCategoryDto dto)
         {
-            if (category == null || string.IsNullOrEmpty(category.Name))
-                return BadRequest("Category name is required.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var category = new Category
+            {
+                Name = dto.Name
+            };
 
             _context.Categories.Add(category);
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetCategory),new { id = category.Id },category);
+        }
+        [HttpPut("{id}")]
+        public IActionResult UpdateCategory(int id ,UpdateCategoryDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var category = _context.Categories.Find(id);
+
+            if (category == null)
+                return NotFound();
+
+            category.Name = dto.Name;
+
+            _context.SaveChanges();
+            return Ok(category);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCategory(int id)
+        {
+            var category = _context.Categories.Find(id);
+
+            if (category == null)
+                return NotFound();
+
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+
+            return NoContent();
+                
+            
         }
     }
 }

@@ -13,7 +13,7 @@ namespace ExpenseTracker.Api.Data
         {
             modelBuilder.Entity<Expense>()
                 .Property(e => e.Amount)
-                .HasPrecision(18, 2);   // ← This silences the warning + makes it explicit
+                .HasPrecision(18, 2);   
         }
     }
 }
