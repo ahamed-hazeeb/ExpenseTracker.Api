@@ -19,7 +19,13 @@ namespace ExpenseTracker.Api.Controllers
         [HttpGet]
         public IActionResult GetCategory()
         {
-            var categories = _context.Categories.ToList();
+            var categories = _context.Categories
+                .Select(u=>new CategoryResponseDto
+                {
+                    Id = u.Id,
+                    Name = u.Name
+                })
+                .ToList();
             return Ok(categories);
         }
 
@@ -37,7 +43,12 @@ namespace ExpenseTracker.Api.Controllers
             _context.Categories.Add(category);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetCategory),new { id = category.Id },category);
+            var Response = new CategoryResponseDto
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
+            return CreatedAtAction(nameof(GetCategory),new { id = category.Id },Response);
         }
         [HttpPut("{id}")]
         public IActionResult UpdateCategory(int id ,UpdateCategoryDto dto)
@@ -53,7 +64,13 @@ namespace ExpenseTracker.Api.Controllers
             category.Name = dto.Name;
 
             _context.SaveChanges();
-            return Ok(category);
+
+            var Response = new CategoryResponseDto
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
+            return Ok(Response);
         }
 
         [HttpDelete("{id}")]

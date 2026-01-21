@@ -19,9 +19,18 @@ namespace ExpenseTracker.Api.Controllers
         [HttpGet]
         public IActionResult GetUser()
         {
-            var users = _context.Users.ToList();
+            var users = _context.Users
+                .Select(u=> new UserResponseDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email
+
+                })
+                .ToList();
             return Ok(users);
         }
+
 
         [HttpPost]
         public IActionResult CreateUser(CreateUserDto dto)
@@ -33,11 +42,18 @@ namespace ExpenseTracker.Api.Controllers
                 Name = dto.Name,
                 Email = dto.Email
             };
-
+           
 
             _context.Users.Add(user);
             _context.SaveChanges();
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            var Response = new UserResponseDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
+
+            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, Response);
 
         }
 
@@ -55,8 +71,16 @@ namespace ExpenseTracker.Api.Controllers
             user.Name = dto.Name;
             user.Email = dto.Email;
 
+
             _context.SaveChanges();
-            return Ok(user);
+
+            var Response = new UserResponseDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
+            return Ok(Response);
         }
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(int id)
