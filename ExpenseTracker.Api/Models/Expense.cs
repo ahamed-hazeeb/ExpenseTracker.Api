@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseTracker.Api.Models
 {
@@ -6,11 +7,18 @@ namespace ExpenseTracker.Api.Models
     {
         public int Id { get; set; }
 
-        [Precision(18, 2)]
+        [Required]
+        [MaxLength(200)]
+        public string Titel { get; set; }= string.Empty;
+        
+        [Range(0.01,double.MaxValue)]
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
 
+        public int UserId { get; set; }
+        public User User { get; set; } = null!;
+
         public int CategoryID { get; set; }
-        public Category? Category { get; set; }
+        public Category? Category { get; set; } = null!;
     }
 }
